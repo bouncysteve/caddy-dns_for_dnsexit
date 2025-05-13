@@ -23,7 +23,7 @@ func (Provider) CaddyModule() caddy.ModuleInfo {
 
 // Provision sets up the module. Implements caddy.Provisioner.
 func (p *Provider) Provision(ctx caddy.Context) error {
-	p.Provider.APIToken = caddy.NewReplacer().ReplaceAll(p.Provider.APIToken, "")
+	p.Provider.APIKey = caddy.NewReplacer().ReplaceAll(p.Provider.APIKey, "")
 	return nil
 }
 
@@ -35,7 +35,7 @@ func (p *Provider) Provision(ctx caddy.Context) error {
 func (p *Provider) UnmarshalCaddyfile(d *caddyfile.Dispenser) error {
 	for d.Next() {
 		if d.NextArg() {
-			p.Provider.APIToken = d.Val()
+			p.Provider.APIKey = d.Val()
 		}
 		if d.NextArg() {
 			return d.ArgErr()
@@ -43,11 +43,11 @@ func (p *Provider) UnmarshalCaddyfile(d *caddyfile.Dispenser) error {
 		for nesting := d.Nesting(); d.NextBlock(nesting); {
 			switch d.Val() {
 			case "api_token":
-				if p.Provider.APIToken != "" {
+				if p.Provider.APIKey != "" {
 					return d.Err("API token already set")
 				}
 				if d.NextArg() {
-					p.Provider.APIToken = d.Val()
+					p.Provider.APIKey = d.Val()
 				}
 				if d.NextArg() {
 					return d.ArgErr()
@@ -57,7 +57,7 @@ func (p *Provider) UnmarshalCaddyfile(d *caddyfile.Dispenser) error {
 			}
 		}
 	}
-	if p.Provider.APIToken == "" {
+	if p.Provider.APIKey == "" {
 		return d.Err("missing API token")
 	}
 	return nil
